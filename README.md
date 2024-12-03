@@ -2,10 +2,23 @@
 
 ## 初期設定
 
-```shell
-cp .env.example .env &&\
-make git/commit-template
-```
+1. コマンドの実行
+
+    ```shell
+    cp .env.example .env &&\
+    make git/commit-template
+    ```
+
+2. ~/.aws等の設定
+
+3. .envの設定
+
+    ```text
+    # terraformディレクトリ
+    WORK_DIR=src
+    # aws profile名
+    AWS_PROFILE=hiyoko-terraform
+    ```
 
 ## terraform コマンドリスト
 
