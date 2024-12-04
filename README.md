@@ -29,6 +29,8 @@ docker compose run --rm terraform init
 
 docker compose run --rm terraform fmt
 
+docker compose run --rm terraform validate
+
 docker compose run --rm terraform plan [ -var <キー>=<バリュー> | -var-file <ファイル> ]
 
 docker compose run --rm terraform apply [ -var <キー>=<バリュー> | -var-file <ファイル> | -auto-approve ]
