@@ -1,5 +1,7 @@
 # docker terraform
 
+aws-vaultを使用している
+
 ## 初期設定
 
 1. コマンドの実行
@@ -16,8 +18,19 @@
     ```text
     # terraformディレクトリ
     WORK_DIR=src
-    # aws profile名
-    AWS_PROFILE=hiyoko-terraform
+    ```
+
+4. aws-vault設定
+
+    ```shell
+    # プロファイルの追加
+    aws-vault add <プロファイル名>
+
+    # プロファイルの実行
+    aws-vault exec <プロファイル名>
+
+    # 終了(aws-vaultを終了時には実行すること)
+    exit
     ```
 
 ## terraform コマンドリスト
@@ -42,12 +55,19 @@ docker compose run --rm terraform console
 
 ## aws-cli
 
-ローカル環境をdockerで作成したい場合  
+.zshrcに記載
 
 ```shell
-docker run --rm -it amazon/aws-cli --version
-alias aws='docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli'
-aws --version
+aws() {
+    envs=$(env | awk -v ORS=' ' '/AWS_(REGION|ACCESS_KEY_ID|SECRET_ACCESS_KEY|SESSION_TOKEN)/ {print "-e " $1}');
+    zsh -c "docker run --rm -it $envs amazon/aws-cli $*"
+}
+```
+
+動作確認
+
+```shell
+aws configure list 
 ```
 
 ## ドキュメント
@@ -56,3 +76,30 @@ aws --version
 - [terraform provider](https://registry.terraform.io/browse/providers)
 - [ブランチルール](./docs/git/branch.md)
 - [コミットルール](./docs/git/commit.md)
+
+## aws-vaultを使用しない場合
+
+1. .envの設定
+
+    ```text
+    # aws profile名(aws-vault不使用時)
+    AWS_PROFILE=hiyoko-terraform
+    ```
+
+2. docker compose terraformサービスの修正
+
+    ```text
+    # 追加ブロック
+    env_file:
+      - .env
+    # 削除ブロック
+    # environment
+    ```
+
+3. aws-cli dockerの設定
+
+    ```shell
+    docker run --rm -it amazon/aws-cli --version
+    alias aws='docker run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli'
+    aws --version
+    ```
